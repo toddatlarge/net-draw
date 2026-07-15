@@ -1,0 +1,572 @@
+{
+  "nodes": [
+    {
+      "id": "act",
+      "type": "threatactor",
+      "x": 200,
+      "y": 190,
+      "label": "Rhysida (RaaS)",
+      "category": "crime-syndicate",
+      "sophistication": "intermediate",
+      "motivation": "personal-gain",
+      "disp": "adversary",
+      "notes": "Ransomware-as-a-Service, active since 2023. Double-extortion. Ref: CISA AA23-319A, MITRE ATT&CK. Conceptual view — tactics only, no operational detail."
+    },
+    {
+      "id": "ph",
+      "type": "phishing",
+      "x": 200,
+      "y": 350,
+      "label": "Phishing / valid accounts",
+      "campaign": "credential lure",
+      "disp": "adversary",
+      "notes": "Initial access via phishing and legitimate compromised credentials (T1566, T1078)."
+    },
+    {
+      "id": "vpn",
+      "type": "firewall",
+      "x": 200,
+      "y": 540,
+      "label": "External VPN — no MFA",
+      "dev": "vpn-gw",
+      "disp": "victim",
+      "effects": [
+        "vulnerable"
+      ],
+      "notes": "Exploitation of internet-facing services / VPNs lacking MFA (T1133, T1190)."
+    },
+    {
+      "id": "ws",
+      "type": "workstation",
+      "x": 560,
+      "y": 350,
+      "label": "Foothold Host",
+      "disp": "victim",
+      "effects": [
+        "infected"
+      ],
+      "notes": "Living-off-the-land: PowerShell, native tooling. Persistence via RDP & created accounts (T1021.001, T1136)."
+    },
+    {
+      "id": "dc",
+      "type": "server",
+      "x": 560,
+      "y": 540,
+      "label": "Domain Controller (ADDS)",
+      "dev": "dc-01",
+      "disp": "compromised",
+      "effects": [
+        "exploit",
+        "compromised"
+      ],
+      "notes": "Privilege escalation — e.g. Zerologon (CVE-2020-1472) — to domain admin. Domain dominance enables backup destruction, vCenter login and GPO deployment (T1068, T1003)."
+    },
+    {
+      "id": "c2",
+      "type": "c2",
+      "x": 900,
+      "y": 350,
+      "label": "Cobalt Strike C2",
+      "disp": "adversary",
+      "notes": "Command & control via Cobalt Strike (T1071)."
+    },
+    {
+      "id": "ad",
+      "type": "c2",
+      "x": 940,
+      "y": 190,
+      "label": "AnyDesk (RMM)",
+      "accent": "#fb923c",
+      "disp": "adversary",
+      "notes": "Legitimate remote-desktop / RMM software abused for resilient, low-detection persistent access — a fallback channel if the C2 beacon is caught (T1219 Remote Access Software)."
+    },
+    {
+      "id": "srv",
+      "type": "server",
+      "x": 900,
+      "y": 540,
+      "label": "File / App Servers",
+      "disp": "victim",
+      "effects": [
+        "compromised"
+      ],
+      "notes": "Lateral movement with PsExec / RDP; log clearing & AV tampering to evade defence (T1021, T1070, T1562)."
+    },
+    {
+      "id": "exf",
+      "type": "cloud",
+      "x": 1250,
+      "y": 350,
+      "label": "Attacker Exfil Store",
+      "disp": "adversary",
+      "notes": "Sensitive data stolen BEFORE encryption — the leverage for double extortion (T1567 exfil over web service)."
+    },
+    {
+      "id": "veeam",
+      "type": "backupserver",
+      "x": 1540,
+      "y": 560,
+      "label": "Veeam Backups — deleted",
+      "dev": "veeam-01",
+      "disp": "victim",
+      "effects": [
+        "outage",
+        "breach"
+      ],
+      "notes": "Inhibit System Recovery (T1490): backup repositories located and destroyed so victims cannot restore — maximising extortion pressure."
+    },
+    {
+      "id": "vc",
+      "type": "hypervisor",
+      "x": 1780,
+      "y": 220,
+      "label": "vCenter / ESXi",
+      "dev": "vcenter-01",
+      "disp": "compromised",
+      "effects": [
+        "compromised"
+      ],
+      "notes": "Attacker logs into vCenter with harvested AD credentials to reach the virtualization layer."
+    },
+    {
+      "id": "vms",
+      "type": "server",
+      "x": 1780,
+      "y": 390,
+      "label": "Virtual Machines",
+      "disp": "victim",
+      "effects": [
+        "outage"
+      ],
+      "notes": "VM datastores / ESXi encrypted directly (T1486) — takes out many servers at once."
+    },
+    {
+      "id": "gpo",
+      "type": "predefined",
+      "x": 1540,
+      "y": 220,
+      "label": "Malicious GPO (ADDS)",
+      "accent": "#f43f5e",
+      "notes": "Domain Policy Modification (T1484.001): a rogue Group Policy Object pushes the encryptor to every domain-joined host at logon/startup — one-to-many deployment."
+    },
+    {
+      "id": "enc",
+      "type": "ransomware",
+      "x": 1540,
+      "y": 390,
+      "label": "Rhysida Encryptor",
+      "family": "Rhysida",
+      "disp": "adversary",
+      "notes": "ChaCha20 + RSA-4096. Skips system dirs to keep hosts bootable (T1486 data encrypted for impact)."
+    },
+    {
+      "id": "san",
+      "type": "san",
+      "x": 1780,
+      "y": 560,
+      "label": "Encrypted File Shares",
+      "disp": "victim",
+      "effects": [
+        "breach",
+        "outage"
+      ],
+      "notes": "Files renamed with .rhysida extension. Business operations halted."
+    },
+    {
+      "id": "note",
+      "type": "document",
+      "x": 2000,
+      "y": 300,
+      "label": "CriticalBreachDetected.pdf",
+      "disp": "victim",
+      "notes": "PDF ransom note dropped on affected hosts (T1491)."
+    },
+    {
+      "id": "leak",
+      "type": "poi",
+      "x": 2000,
+      "y": 480,
+      "label": "Leak Site (double extortion)",
+      "disp": "adversary",
+      "notes": "Victim named on a Tor leak/auction site; stolen data threatened for release to force payment."
+    }
+  ],
+  "edges": [
+    {
+      "id": "a1",
+      "a": "act",
+      "b": "ph",
+      "label": "operates",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "a2",
+      "a": "act",
+      "b": "enc",
+      "label": "deploys",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "i1",
+      "a": "ph",
+      "b": "ws",
+      "label": "",
+      "style": "dashed",
+      "anim": true,
+      "arrows": "end"
+    },
+    {
+      "id": "i2",
+      "a": "vpn",
+      "b": "ws",
+      "label": "or exploit",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "p1",
+      "a": "ws",
+      "b": "dc",
+      "label": "escalate",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "c1",
+      "a": "ws",
+      "b": "c2",
+      "label": "beacon",
+      "style": "dotted",
+      "anim": true,
+      "arrows": "both"
+    },
+    {
+      "id": "c2e",
+      "a": "dc",
+      "b": "srv",
+      "label": "lateral",
+      "style": "dashed",
+      "anim": true,
+      "arrows": "end"
+    },
+    {
+      "id": "c3",
+      "a": "c2",
+      "b": "srv",
+      "label": "tasking",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "ad1",
+      "a": "ws",
+      "b": "ad",
+      "label": "deploy AnyDesk (persistent remote access)",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "x1",
+      "a": "srv",
+      "b": "exf",
+      "label": "steal data (exfil over HTTPS)",
+      "style": "dashed",
+      "anim": true,
+      "arrows": "end"
+    },
+    {
+      "id": "b1",
+      "a": "dc",
+      "b": "veeam",
+      "label": "delete backups (T1490)",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "b2",
+      "a": "dc",
+      "b": "vc",
+      "label": "AD creds → vCenter login",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "b3",
+      "a": "dc",
+      "b": "gpo",
+      "label": "create malicious GPO",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "v1",
+      "a": "vc",
+      "b": "vms",
+      "label": "encrypt VMs (T1486)",
+      "style": "dashed",
+      "anim": true,
+      "arrows": "end"
+    },
+    {
+      "id": "m1",
+      "a": "exf",
+      "b": "enc",
+      "label": "then detonate",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "g1",
+      "a": "gpo",
+      "b": "enc",
+      "label": "mass-deploy domain-wide",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "m2",
+      "a": "enc",
+      "b": "san",
+      "label": "encrypt",
+      "style": "dashed",
+      "anim": true,
+      "arrows": "end"
+    },
+    {
+      "id": "m3",
+      "a": "enc",
+      "b": "note",
+      "label": "drop note",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "m4",
+      "a": "exf",
+      "b": "leak",
+      "label": "publish threat",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    }
+  ],
+  "zones": [
+    {
+      "id": "z1",
+      "x": 40,
+      "y": 110,
+      "w": 320,
+      "h": 520,
+      "label": "1 · Initial Access",
+      "color": "#ef4444"
+    },
+    {
+      "id": "z2",
+      "x": 400,
+      "y": 110,
+      "w": 320,
+      "h": 520,
+      "label": "2 · Foothold & Privilege Escalation",
+      "color": "#f97316"
+    },
+    {
+      "id": "z3",
+      "x": 760,
+      "y": 110,
+      "w": 320,
+      "h": 520,
+      "label": "3 · C2, Discovery & Lateral Movement",
+      "color": "#a78bfa"
+    },
+    {
+      "id": "z4",
+      "x": 1120,
+      "y": 110,
+      "w": 260,
+      "h": 520,
+      "label": "4 · Exfiltration",
+      "color": "#fbbf24"
+    },
+    {
+      "id": "z5",
+      "x": 1420,
+      "y": 110,
+      "w": 700,
+      "h": 580,
+      "label": "5 · Impact & Extortion",
+      "color": "#f43f5e"
+    }
+  ],
+  "journey": {
+    "steps": [
+      {
+        "note": "Rhysida — a ransomware-as-a-service crime group (active since 2023) known for double extortion. Conceptual kill chain mapped to MITRE ATT&CK / CISA AA23-319A.",
+        "show": [
+          "act"
+        ],
+        "highlight": [
+          "act"
+        ],
+        "focus": true
+      },
+      {
+        "note": "1 · Initial Access. Rhysida gets in through phishing and valid stolen credentials, or by exploiting internet-facing services and VPNs that lack MFA.",
+        "show": [
+          "z1",
+          "ph",
+          "vpn",
+          "a1",
+          "a2"
+        ],
+        "highlight": [
+          "ph",
+          "vpn"
+        ],
+        "focus": true
+      },
+      {
+        "note": "2 · Foothold & Privilege Escalation. Establish a foothold with living-off-the-land tooling, then escalate — e.g. Zerologon — to take over the Domain Controller. Domain admin is the master key for everything that follows.",
+        "show": [
+          "z2",
+          "ws",
+          "dc",
+          "i1",
+          "i2",
+          "p1"
+        ],
+        "highlight": [
+          "ws",
+          "dc"
+        ],
+        "focus": true
+      },
+      {
+        "note": "3 · C2, Discovery & Lateral Movement. A Cobalt Strike beacon calls home, and they also install AnyDesk — a legitimate RMM tool — for resilient, low-detection remote access. Operators use PsExec/RDP to spread across file and application servers, clearing logs and tampering with AV.",
+        "show": [
+          "z3",
+          "c2",
+          "ad",
+          "srv",
+          "c1",
+          "c2e",
+          "c3",
+          "ad1"
+        ],
+        "highlight": [
+          "c2",
+          "ad",
+          "srv"
+        ],
+        "focus": true
+      },
+      {
+        "note": "4 · Exfiltration. Sensitive data is STOLEN over the network before anything is encrypted — this is the leverage for the second extortion demand.",
+        "show": [
+          "z4",
+          "exf",
+          "x1"
+        ],
+        "highlight": [
+          "srv",
+          "exf",
+          "x1"
+        ],
+        "focus": true
+      },
+      {
+        "note": "5a · Inhibit recovery. Using domain admin, they hunt down and DELETE the backups — typically the Veeam backup server — so the victim cannot simply restore (T1490).",
+        "show": [
+          "z5",
+          "veeam",
+          "b1"
+        ],
+        "highlight": [
+          "dc",
+          "veeam",
+          "b1"
+        ],
+        "focus": true
+      },
+      {
+        "note": "5b · Hit the virtualization layer. They log into vCenter with harvested AD credentials and encrypt the VM datastores / ESXi directly — taking out many servers in one move (T1486).",
+        "show": [
+          "vc",
+          "vms",
+          "b2",
+          "v1"
+        ],
+        "highlight": [
+          "vc",
+          "vms",
+          "b2",
+          "v1"
+        ],
+        "focus": true
+      },
+      {
+        "note": "5c · Mass deployment. Instead of running the encryptor host-by-host, they create a malicious Group Policy Object in Active Directory that pushes it to every domain-joined machine at logon (T1484.001).",
+        "show": [
+          "gpo",
+          "enc",
+          "b3",
+          "g1",
+          "m1"
+        ],
+        "highlight": [
+          "gpo",
+          "enc",
+          "b3",
+          "g1"
+        ],
+        "focus": true
+      },
+      {
+        "note": "5d · Encrypt & notify. The Rhysida encryptor (ChaCha20 + RSA-4096) encrypts file shares and drops the CriticalBreachDetected.pdf ransom note. Operations halt.",
+        "show": [
+          "san",
+          "note",
+          "m2",
+          "m3"
+        ],
+        "highlight": [
+          "enc",
+          "san",
+          "note"
+        ],
+        "focus": true
+      },
+      {
+        "note": "Double extortion. The victim is named on a Tor leak site and the stolen data is threatened for release — pressure to pay even with backups.",
+        "show": [
+          "leak",
+          "m4"
+        ],
+        "highlight": [
+          "exf",
+          "leak"
+        ],
+        "focus": true
+      },
+      {
+        "note": "Full chain: access → domain admin → C2 & lateral → exfiltrate → destroy backups → encrypt VMs & shares (mass-deployed via GPO) → extort. Break it with: MFA everywhere, patching, tiered admin & GPO monitoring, immutable/offline backups, and egress control.",
+        "show": [],
+        "highlight": [],
+        "focus": true
+      }
+    ]
+  }
+}

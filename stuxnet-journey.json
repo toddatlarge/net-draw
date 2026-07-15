@@ -1,0 +1,394 @@
+{
+  "nodes": [
+    {
+      "id": "act",
+      "type": "threatactor",
+      "x": 200,
+      "y": 220,
+      "label": "Nation-state Author",
+      "category": "nation-state",
+      "sophistication": "strategic",
+      "motivation": "ideology",
+      "disp": "adversary",
+      "notes": "Operation Olympic Games (publicly attributed). Objective: sabotage enrichment without overt kinetic action."
+    },
+    {
+      "id": "mal",
+      "type": "malware",
+      "x": 200,
+      "y": 440,
+      "label": "Stuxnet",
+      "family": "W32.Stuxnet",
+      "category": "worm",
+      "disp": "adversary",
+      "notes": "~500KB worm. Four zero-days, two stolen code-signing certs, first known PLC rootkit."
+    },
+    {
+      "id": "cl",
+      "type": "laptop",
+      "x": 520,
+      "y": 230,
+      "label": "Contractor Laptop",
+      "disp": "victim",
+      "effects": [
+        "infected"
+      ],
+      "notes": "Patient zero on the IT side — vendor/contractor machine."
+    },
+    {
+      "id": "itpc",
+      "type": "workstation",
+      "x": 820,
+      "y": 230,
+      "label": "Engineering PC",
+      "disp": "victim",
+      "effects": [
+        "infected"
+      ],
+      "notes": "Windows host. Spreads via USB autorun, network shares, print-spooler flaw (MS10-061)."
+    },
+    {
+      "id": "wincc",
+      "type": "database",
+      "x": 660,
+      "y": 470,
+      "label": "WinCC SCADA DB",
+      "disp": "victim",
+      "effects": [
+        "infected"
+      ],
+      "notes": "Siemens WinCC with hard-coded default DB credentials — a propagation vector."
+    },
+    {
+      "id": "ws",
+      "type": "workstation",
+      "x": 1340,
+      "y": 210,
+      "label": "STEP7 / WinCC Eng. WS",
+      "dev": "simatic-ws",
+      "disp": "victim",
+      "effects": [
+        "infected",
+        "compromised"
+      ],
+      "notes": "Siemens engineering station. Infects STEP7 projects and hijacks s7otbxdx.dll to intercept PLC comms."
+    },
+    {
+      "id": "plc",
+      "type": "ot",
+      "x": 1340,
+      "y": 410,
+      "label": "Siemens S7-300 PLC",
+      "dev": "6ES7-315",
+      "disp": "compromised",
+      "effects": [
+        "exploit",
+        "compromised"
+      ],
+      "notes": "Rogue ladder logic injected. First-ever PLC rootkit hides its own code from the engineer."
+    },
+    {
+      "id": "cf",
+      "type": "ot",
+      "x": 1340,
+      "y": 610,
+      "label": "IR-1 Centrifuge Cascade",
+      "disp": "victim",
+      "effects": [
+        "outage"
+      ],
+      "notes": "Rotor speed driven out of tolerance (~1064 Hz → 1410 Hz, then 2 Hz). Cumulative damage over months."
+    },
+    {
+      "id": "hmi",
+      "type": "server",
+      "x": 1620,
+      "y": 410,
+      "label": "Operator HMI / SCADA",
+      "disp": "victim",
+      "notes": "Operators shown pre-recorded 'all normal' values — the sabotage is masked in real time."
+    },
+    {
+      "id": "ins",
+      "type": "person",
+      "x": 1055,
+      "y": 235,
+      "label": "Insider courier",
+      "category": "recruited insider",
+      "disp": "adversary",
+      "notes": "Reported (2019 investigation) to be an engineer recruited by Dutch intelligence who physically introduced Stuxnet on removable media. Earlier theory: unwitting contractors. Either way a human had to cross the air gap."
+    },
+    {
+      "id": "net",
+      "type": "cloud",
+      "x": 560,
+      "y": 800,
+      "label": "Internet",
+      "disp": "neutral"
+    },
+    {
+      "id": "wld",
+      "type": "poi",
+      "x": 810,
+      "y": 800,
+      "label": "Global spread · AV discovery 2010",
+      "disp": "neutral",
+      "effects": [
+        "infected"
+      ],
+      "notes": "An aggressive 2010 variant spread beyond Natanz once an infected laptop reconnected to the internet. VirusBlokAda then Symantec analysed it mid-2010 — the first cyber-physical weapon became public."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "a": "act",
+      "b": "mal",
+      "label": "authors",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "e2",
+      "a": "mal",
+      "b": "cl",
+      "label": "initial infection",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "e3",
+      "a": "cl",
+      "b": "itpc",
+      "label": "propagates",
+      "style": "dashed",
+      "anim": true,
+      "arrows": "end"
+    },
+    {
+      "id": "e4",
+      "a": "cl",
+      "b": "wincc",
+      "label": "default DB creds",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "e5",
+      "a": "itpc",
+      "b": "wincc",
+      "label": "LAN",
+      "style": "solid",
+      "anim": false,
+      "arrows": "none"
+    },
+    {
+      "id": "e6a",
+      "a": "itpc",
+      "b": "ins",
+      "label": "infected USB",
+      "style": "sneakernet",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "e6b",
+      "a": "ins",
+      "b": "ws",
+      "label": "carried across the air gap",
+      "style": "sneakernet",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "e7",
+      "a": "ws",
+      "b": "plc",
+      "label": "rogue STEP7 code → PLC",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "e8",
+      "a": "plc",
+      "b": "cf",
+      "label": "alters rotor frequency",
+      "style": "dashed",
+      "anim": true,
+      "arrows": "end"
+    },
+    {
+      "id": "e9",
+      "a": "plc",
+      "b": "hmi",
+      "label": "replays fake data",
+      "style": "dotted",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "e10",
+      "a": "cl",
+      "b": "net",
+      "label": "infected laptop taken out, plugged in online",
+      "style": "dashed",
+      "anim": false,
+      "arrows": "end"
+    },
+    {
+      "id": "e11",
+      "a": "net",
+      "b": "wld",
+      "label": "worm self-propagates worldwide",
+      "style": "dashed",
+      "anim": true,
+      "arrows": "end"
+    }
+  ],
+  "zones": [
+    {
+      "id": "z1",
+      "x": 50,
+      "y": 90,
+      "w": 300,
+      "h": 520,
+      "label": "Authoring & Delivery",
+      "color": "#ef4444"
+    },
+    {
+      "id": "z2",
+      "x": 400,
+      "y": 90,
+      "w": 520,
+      "h": 560,
+      "label": "IT / Contractor Network — Internet-connected",
+      "color": "#60a5fa"
+    },
+    {
+      "id": "zg",
+      "x": 950,
+      "y": 90,
+      "w": 210,
+      "h": 560,
+      "label": "AIR GAP (no internet)",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "z3",
+      "x": 1190,
+      "y": 90,
+      "w": 560,
+      "h": 640,
+      "label": "OT / ICS — Uranium enrichment (air-gapped)",
+      "color": "#34d399"
+    },
+    {
+      "id": "zb",
+      "x": 400,
+      "y": 700,
+      "w": 560,
+      "h": 190,
+      "label": "Escape into the wild (≈2010)",
+      "color": "#a78bfa"
+    }
+  ],
+  "journey": {
+    "steps": [
+      {
+        "note": "Stuxnet (2010) — a nation-state builds the first cyber-physical weapon: four zero-days, stolen code-signing certs, and the first-ever PLC rootkit.",
+        "show": [
+          "z1",
+          "act",
+          "mal",
+          "e1"
+        ],
+        "highlight": [
+          "act",
+          "mal"
+        ],
+        "focus": true
+      },
+      {
+        "note": "It seeds contractor IT networks. The worm spreads laptop-to-PC via USB autorun, network shares and the print-spooler flaw (MS10-061), and abuses default WinCC database credentials.",
+        "show": [
+          "z2",
+          "cl",
+          "itpc",
+          "wincc",
+          "e2",
+          "e3",
+          "e4",
+          "e5"
+        ],
+        "highlight": [
+          "cl",
+          "itpc",
+          "wincc"
+        ],
+        "focus": true
+      },
+      {
+        "note": "The target is air-gapped — no network path in. A human courier carries an infected USB across the gap and into the enrichment facility. This is the only way in.",
+        "show": [
+          "zg",
+          "ins",
+          "z3",
+          "ws",
+          "e6a",
+          "e6b"
+        ],
+        "highlight": [
+          "ins",
+          "ws",
+          "e6a",
+          "e6b"
+        ],
+        "focus": true
+      },
+      {
+        "note": "Inside, Stuxnet rewrites the Siemens S7-300 PLC: it drives centrifuge rotor speeds out of tolerance to wreck them — while replaying pre-recorded 'all normal' values so operators see nothing wrong.",
+        "show": [
+          "plc",
+          "cf",
+          "hmi",
+          "e7",
+          "e8",
+          "e9"
+        ],
+        "highlight": [
+          "ws",
+          "plc",
+          "cf",
+          "hmi"
+        ],
+        "focus": true
+      },
+      {
+        "note": "It escaped by accident: an infected laptop later reconnected to the internet, and the aggressive 2010 variant self-propagated worldwide — which is how researchers discovered it.",
+        "show": [
+          "zb",
+          "net",
+          "wld",
+          "e10",
+          "e11"
+        ],
+        "highlight": [
+          "cl",
+          "net",
+          "wld"
+        ],
+        "focus": true
+      },
+      {
+        "note": "The full chain: design → IT foothold → human-carried USB across the air gap → physical sabotage of centrifuges → accidental release into the wild.",
+        "show": [],
+        "highlight": [],
+        "focus": true
+      }
+    ]
+  }
+}
